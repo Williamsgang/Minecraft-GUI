@@ -15,15 +15,11 @@ namespace TestWinForm
         public MainForm()
         {
             InitializeComponent();
-            if (!EventLog.SourceExists("Console"))
-            {
-                EventLog.CreateEventSource("Console", "console");
-                return;
-            }
-
+            
+            /*EventLog.CreateEventSource("Console", "console");
             eventLog = new EventLog();
             eventLog.Source = "Console";
-            eventLog.WriteEntry("Event log created");
+            eventLog.WriteEntry("Event log created");*/
         }
 
         private void SetFilePath(string path)
@@ -200,33 +196,6 @@ namespace TestWinForm
             javaProcess.WaitForExit();
         }
 
-        static T JsonFileReader<T>(string input)
-        { 
-            try 
-            {
-                // Read JSON file content
-                string jsonContent = File.ReadAllText("");
-
-                // Deserialize JSON
-                T data = JsonConvert.DeserializeObject<T>(jsonContent);
-
-                return data;
-            }
-            catch (Exception ex) 
-            { 
-               
-                throw;
-            }
-        }
-        
-        private class JsonFile 
-        {
-            private string ServerJar { get; set; }
-            private string MaxRam { get; set; }
-            private string MinRam { get; set; }
-            private string JavaParams { get; set; }
-        }
-
         private void cmdInputText_TextChanged(object sender, EventArgs e)
         {
 
@@ -239,10 +208,10 @@ namespace TestWinForm
 
         private void createFileBtn_Click(object sender, EventArgs e)
         {
-            Form createFileForm = new CreateFileForm();
+            CreateFileForm createFileForm = new CreateFileForm();
             createFileForm.ShowDialog();
 
-
+            string file = createFileForm.file;
 
         }
 
@@ -259,10 +228,10 @@ namespace TestWinForm
 
     public partial class CreateFileForm : Form
     {
-        private string file;
+        public string file;
 
         private string fileName;
-        public string FileName
+        private string FileName
         {
             get { return fileName; }
             set { fileName = value; }
@@ -271,12 +240,15 @@ namespace TestWinForm
         private string[] fileExtensions = { ".txt", ".properties", ".bat" };
 
         private string fileExtension;
-        public string FileExtension
+        private string FileExtension
         {
             get { return fileExtension; }
             set { fileExtension = value; }
         }
 
+        private bool Checked { get; set; }
+
+        // CreateFileForm properties
         private TextBox fileNameTextBox;
         private Button saveFileInfo;
         private Button closeFormBtn;
@@ -286,47 +258,63 @@ namespace TestWinForm
 
         public CreateFileForm()
         {
+            // Initializing properties
             this.saveFileInfo = new Button();
+            this.closeFormBtn = new Button();
             this.textFile = new RadioButton();
             this.batFile = new RadioButton();
             this.propertiesFile = new RadioButton();
             this.fileNameTextBox = new TextBox();
 
+            // textFile radiobutton congfigs
             this.textFile.Enabled = true;
             this.textFile.Text = ".txt";
             this.textFile.Size = new System.Drawing.Size(50, 20);
             this.textFile.Location = new System.Drawing.Point(20, 20);
+            this.textFile.Checked = false;
+            this.textFile.CheckedChanged += new System.EventHandler(this.textFile_CheckChanged);
             this.Controls.Add(textFile);
 
+            // batFile radiobutton congfigs
             this.batFile.Enabled = true;
             this.batFile.Text = ".bat";
             this.batFile.Size = new System.Drawing.Size(50, 20);
             this.batFile.Location = new System.Drawing.Point(20, 40);
+            this.batFile.Checked = false;
+            this.batFile.CheckedChanged += new System.EventHandler(this.batFile_CheckChanged);
             this.Controls.Add(batFile);
 
+            // propertiesFile radiobutton congfigs
             this.propertiesFile.Enabled = true;
             this.propertiesFile.Text = ".properties";
             this.propertiesFile.Size = new System.Drawing.Size(100, 20);
             this.propertiesFile.Location = new System.Drawing.Point(20, 60);
+            this.propertiesFile.Checked = false;
+            this.propertiesFile.CheckedChanged += new System.EventHandler(this.propertiesFile_CheckChanged);
             this.Controls.Add(propertiesFile);
 
+            // fileName text box configs
             this.fileNameTextBox.Enabled = true;
             this.fileNameTextBox.Size = new System.Drawing.Size(Width, Height);
             this.fileNameTextBox.Location = new System.Drawing.Point(20, 80);
             this.Controls.Add(fileNameTextBox);
 
+            // saveFileInfo button configs
             this.saveFileInfo.Enabled = true;
             this.saveFileInfo.Text = "Save File";
-            this.Location = new System.Drawing.Point(20, 100);
+            this.saveFileInfo.Location = new System.Drawing.Point(20, 100);
             this.saveFileInfo.Click += new System.EventHandler(this.saveFileInfo_Click);
             this.Controls.Add(saveFileInfo);
 
+            // closeFormBtn button configs
             this.closeFormBtn.Enabled = true;
-            this.Text = "Close Form";
-            this.Location = new System.Drawing.Point(100, 100);
+            this.closeFormBtn.Text = "Close Form";
+            this.closeFormBtn.Location = new System.Drawing.Point(100, 100);
+            this.closeFormBtn.Click += new System.EventHandler(this.closeFormBtn_Click);
+            this.Controls.Add(closeFormBtn);
 
-
-            this.Text = "Hello World";
+            // CreateFileForm form configs
+            this.Text = "New File";
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(720, 360);
@@ -334,38 +322,57 @@ namespace TestWinForm
 
         private void saveFileInfo_Click(object sender, EventArgs e)
         {
-            string tempFileName = this.FileName;
-            string fileExtension = this.FileExtension;
+            string tempFileName = fileNameTextBox.Text;
+            string fileExtension = this.fileExtension;
 
             string fileName = tempFileName + fileExtension;
 
             this.file = fileName;
-            Console.WriteLine("SaveFileInfo Btn has been clicked.");
+            Console.WriteLine($"SaveFileInfo Btn has been clicked. File: {this.file}");
 
+            if (!File.Exists(this.file))
+            {
+                File.Create(@"\settings\" + this.file);
+                Console.WriteLine("A file has been created at : " + File.Exists(file));
+                this.Close();
+            } else
+            {
+                Console.WriteLine("A file with this name has been created");
+                fileNameTextBox.Text = "File exists. Enter a new file name/type";
+            }
         }
 
-        private void fileNameTextBox_TextChanged(object sender, EventArgs e)
+        private void closeFormBtn_Click(object sender, EventArgs e)
         {
-            this.FileName = fileNameTextBox.Text;
-            Console.WriteLine("fileNameTextBox has been updated.");
+            this.Close();
+            Console.WriteLine("closeFormBtn clicked");
         }
 
         private void textFile_CheckChanged(object sender, EventArgs e)
         {
-            this.FileExtension = fileExtensions[0];
-            Console.WriteLine("textFile radiobutton has been updated.");
+            if (this.textFile.Checked == true)
+            {
+                this.fileExtension = fileExtensions[0];
+                Console.WriteLine($"textFile radiobutton has been updated. File extension: {this.fileExtension}");
+            }
         }
 
         private void propertiesFile_CheckChanged(object sender, EventArgs e)
         {
-            this.FileExtension = fileExtensions[1];
-            Console.WriteLine("propertiesFile radiobutton has been updated.");
+            if (this.propertiesFile.Checked == true)
+            {
+                this.fileExtension = fileExtensions[1];
+                Console.WriteLine($"propertiesFile radiobutton has been updated. File extension: {this.fileExtension}");
+            }
         }
 
         private void batFile_CheckChanged(object sender, EventArgs e)
         {
-            this.FileExtension = fileExtensions[2];
-            Console.WriteLine("batFile radiobutton has been updated.");
+            if (this.batFile.Checked == true)
+            {
+                this.fileExtension = fileExtensions[2];
+                Console.WriteLine($"batFile radiobutton has been updated. File extension: {this.fileExtension}");
+            }
         }
     }
 }
