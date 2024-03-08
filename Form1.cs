@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
@@ -11,9 +11,19 @@ namespace TestWinForm
     public partial class MainForm : Form
     {
         private string filePath;
+        private EventLog eventLog;
         public MainForm()
         {
             InitializeComponent();
+            if (!EventLog.SourceExists("Console"))
+            {
+                EventLog.CreateEventSource("Console", "console");
+                return;
+            }
+
+            eventLog = new EventLog();
+            eventLog.Source = "Console";
+            eventLog.WriteEntry("Event log created");
         }
 
         private void SetFilePath(string path)
@@ -35,6 +45,7 @@ namespace TestWinForm
             fileTree.Nodes.Add(node);
 
             node.Expand();
+            eventLog.WriteEntry("Treeview Btn clicked");
         }
 
         private TreeNode TraverseDirectory(string path)
@@ -118,8 +129,7 @@ namespace TestWinForm
                             {
                                 while (!file.EndOfStream)
                                 {
-                                    stringBuilder.Append(file.ReadLine());
-                                    stringBuilder.Append("\n");
+                                    stringBuilder.Append(file.ReadLine() + "\n");
                                 }
                                 fileOuput.Text = stringBuilder.ToString();
                             }
@@ -171,7 +181,7 @@ namespace TestWinForm
         private void serverStartBtn_Click(object sender, EventArgs e)
         {
 
-            javaProcess.StartInfo.FileName = "";
+            javaProcess.StartInfo.FileName = "java.exe";
             javaProcess.StartInfo.Arguments = ""; // java args
             javaProcess.StartInfo.UseShellExecute = false;
             javaProcess.StartInfo.RedirectStandardInput = true;
@@ -188,6 +198,33 @@ namespace TestWinForm
             }
 
             javaProcess.WaitForExit();
+        }
+
+        static T JsonFileReader<T>(string input)
+        { 
+            try 
+            {
+                // Read JSON file content
+                string jsonContent = File.ReadAllText("");
+
+                // Deserialize JSON
+                T data = JsonConvert.DeserializeObject<T>(jsonContent);
+
+                return data;
+            }
+            catch (Exception ex) 
+            { 
+               
+                throw;
+            }
+        }
+        
+        private class JsonFile 
+        {
+            private string ServerJar { get; set; }
+            private string MaxRam { get; set; }
+            private string MinRam { get; set; }
+            private string JavaParams { get; set; }
         }
 
         private void cmdInputText_TextChanged(object sender, EventArgs e)
@@ -216,16 +253,6 @@ namespace TestWinForm
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            string defaultEnvVar = nameof(defaultEnvVar);
-            string processEnvVar = nameof(processEnvVar);
-            string userEnvVar = nameof(userEnvVar);
-            string machineEnvVar = nameof(machineEnvVar);
-
-            string dft = nameof(dft);
-            string process = nameof(process);
-            string user = nameof(user);
-            string machine = nameof(machine);
-
 
         }
     }
