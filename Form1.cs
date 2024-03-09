@@ -11,15 +11,24 @@ namespace TestWinForm
     public partial class MainForm : Form
     {
         private string filePath;
-        private EventLog eventLog;
+
         public MainForm()
         {
+            string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string appDir = Path.Combine(appFolder, @"MinecraftGUI\");
+
             InitializeComponent();
-            
-            /*EventLog.CreateEventSource("Console", "console");
-            eventLog = new EventLog();
-            eventLog.Source = "Console";
-            eventLog.WriteEntry("Event log created");*/
+
+            if (!Directory.Exists(appDir))
+            {
+                Directory.CreateDirectory(appDir);
+                MessageBox.Show($"Directory created at: {appDir} for server files");
+                Console.WriteLine("Directory created.");
+            }
+            else
+            {
+                Console.WriteLine($"Directory is already created at: {appDir}");
+            }
         }
 
         private void SetFilePath(string path)
@@ -41,7 +50,6 @@ namespace TestWinForm
             fileTree.Nodes.Add(node);
 
             node.Expand();
-            eventLog.WriteEntry("Treeview Btn clicked");
         }
 
         private TreeNode TraverseDirectory(string path)
