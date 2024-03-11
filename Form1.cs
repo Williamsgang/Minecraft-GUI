@@ -16,18 +16,35 @@ namespace TestWinForm
         {
             string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string appDir = Path.Combine(appFolder, @"MinecraftGUI\");
+            string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings");
+            string serversDir = Path.Combine(appFolder, @"MinecraftGUI\servers");
 
             InitializeComponent();
 
-            if (!Directory.Exists(appDir))
+            if (!Directory.Exists(appDir) && !Directory.Exists(serversDir) && !Directory.Exists(settingsDir))
             {
                 Directory.CreateDirectory(appDir);
-                MessageBox.Show($"Directory created at: {appDir} for server files");
-                Console.WriteLine("Directory created.");
+                Directory.CreateDirectory(serversDir);
+                Directory.CreateDirectory(settingsDir);
+
+                MessageBox.Show($"Directory created at: {appDir} for application files. \n" +
+                                $"Directory created at: {settingsDir} for settings files. \n" +
+                                $"Directory created at: {serversDir} for server files.");
             }
             else
             {
-                Console.WriteLine($"Directory is already created at: {appDir}");
+                if (Directory.Exists(serversDir))
+                {
+                    Console.WriteLine("Server folder already exists.");
+                } 
+                else if (Directory.Exists(settingsDir))
+                {
+                    Console.WriteLine("Settings folder already exists.");
+                } 
+                else if (Directory.Exists(appDir))
+                {
+                    Console.WriteLine("Application folder already exists.");
+                }
             }
         }
 
@@ -36,18 +53,18 @@ namespace TestWinForm
             this.filePath = path;
         }
 
-        private void treeViewBtn_Click(object sender, EventArgs e)
+        private void serverFilesBtn_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             if (dialog.ShowDialog() != DialogResult.OK) { return; }
 
-            fileTree.Nodes.Clear();
+            serverFilesTree.Nodes.Clear();
 
             var node = TraverseDirectory(dialog.SelectedPath);
             SetFilePath(dialog.SelectedPath);
             node.Text = Path.GetFileName(node.Text);
 
-            fileTree.Nodes.Add(node);
+            serverFilesTree.Nodes.Add(node);
 
             node.Expand();
         }
@@ -74,9 +91,9 @@ namespace TestWinForm
 
         private string serverFile;
 
-        private void fileTree_AfterSelect(object sender, TreeViewEventArgs e)
+        private void serverFilesTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeNode treeNode = fileTree.SelectedNode;
+            TreeNode treeNode = serverFilesTree.SelectedNode;
             string fullPath = filePath + @"\" + Path.GetFileName(treeNode.FullPath);
 
             StringBuilder stringBuilder = new StringBuilder();
@@ -120,8 +137,9 @@ namespace TestWinForm
                     }
                     else
                     {
-                        fileOuput.Text = "File does not exist";
-                        fileOuput.Focus();
+                        fileOuput.Text = fullPath;
+                        // fileOuput.Text = "File does not exist";
+                        // fileOuput.Focus();
                     }
                     break;
                 case TreeViewAction.ByMouse:
@@ -158,8 +176,9 @@ namespace TestWinForm
                     }
                     else
                     {
-                        fileOuput.Text = "File does not exist";
-                        fileOuput.Focus();
+                        fileOuput.Text = fullPath;
+                        // fileOuput.Text = "File does not exist";
+                        // fileOuput.Focus();
                     }
                     break;
             }
@@ -184,6 +203,32 @@ namespace TestWinForm
 
         private void serverStartBtn_Click(object sender, EventArgs e)
         {
+            string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings\settings.json");
+            StringBuilder stringBuilder = new StringBuilder();
+            string jsonToString = "";
+
+            using (StreamReader sr = new StreamReader(settingsDir)) 
+            {
+                while (!sr.EndOfStream)
+                {
+                    stringBuilder.Append(sr.ReadLine());
+                }
+                jsonToString = stringBuilder.ToString();
+            }
+
+            JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonToString));
+            while (jsonReader.Read())
+            {
+                if (jsonReader.Value != null)
+                {
+                    Console.WriteLine("Token: {0}, Value: {1}", jsonReader.TokenType, jsonReader.Value);
+                } 
+                else
+                {
+                    Console.WriteLine("Token: {0}", jsonReader.TokenType);
+                }
+            }
 
             javaProcess.StartInfo.FileName = "java.exe";
             javaProcess.StartInfo.Arguments = ""; // java args
@@ -220,6 +265,7 @@ namespace TestWinForm
             createFileForm.ShowDialog();
 
             string file = createFileForm.file;
+            Console.WriteLine("You have created a new file: " + file);
 
         }
 
