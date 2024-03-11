@@ -21,30 +21,32 @@ namespace TestWinForm
 
             InitializeComponent();
 
-            if (!Directory.Exists(appDir) && !Directory.Exists(serversDir) && !Directory.Exists(settingsDir))
+            if (!Directory.Exists(appDir))
             {
                 Directory.CreateDirectory(appDir);
-                Directory.CreateDirectory(serversDir);
-                Directory.CreateDirectory(settingsDir);
-
-                MessageBox.Show($"Directory created at: {appDir} for application files. \n" +
-                                $"Directory created at: {settingsDir} for settings files. \n" +
-                                $"Directory created at: {serversDir} for server files.");
             }
             else
             {
-                if (Directory.Exists(serversDir))
-                {
-                    Console.WriteLine("Server folder already exists.");
-                } 
-                else if (Directory.Exists(settingsDir))
-                {
-                    Console.WriteLine("Settings folder already exists.");
-                } 
-                else if (Directory.Exists(appDir))
-                {
-                    Console.WriteLine("Application folder already exists.");
-                }
+                Console.WriteLine("Application folder already exists.");
+            }
+
+            if (!Directory.Exists(serversDir))
+            {
+                Directory.CreateDirectory(serversDir);
+            }
+            else
+            {
+                Console.WriteLine("Server folder already exists.");
+            }
+
+            if (!Directory.Exists(settingsDir))
+            {
+
+                Directory.CreateDirectory(settingsDir);
+            }
+            else
+            {
+                Console.WriteLine("Settings folder already exists.");
             }
         }
 
@@ -205,10 +207,26 @@ namespace TestWinForm
         {
             string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings\settings.json");
+
+            if (!File.Exists(settingsDir))
+            {
+                File.Create(settingsDir);
+                JsonValues jsonValues = new JsonValues
+                {
+                    MaxRam = "-Xmx4G",
+                    MinRam = "-Xms1G",
+                    JavaParams = ""
+                };
+                string defaultSettings = JsonConvert.SerializeObject(jsonValues, Formatting.Indented);
+                Console.WriteLine("Settings file created.");
+                File.WriteAllText(settingsDir, defaultSettings);
+            }
+
+
             StringBuilder stringBuilder = new StringBuilder();
             string jsonToString = "";
 
-            using (StreamReader sr = new StreamReader(settingsDir)) 
+            using (StreamReader sr = new StreamReader(settingsDir))
             {
                 while (!sr.EndOfStream)
                 {
@@ -223,7 +241,7 @@ namespace TestWinForm
                 if (jsonReader.Value != null)
                 {
                     Console.WriteLine("Token: {0}, Value: {1}", jsonReader.TokenType, jsonReader.Value);
-                } 
+                }
                 else
                 {
                     Console.WriteLine("Token: {0}", jsonReader.TokenType);
@@ -379,6 +397,9 @@ namespace TestWinForm
             string tempFileName = fileNameTextBox.Text;
             string fileExtension = this.fileExtension;
 
+            string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings\");
+
             string fileName = tempFileName + fileExtension;
 
             this.file = fileName;
@@ -386,10 +407,11 @@ namespace TestWinForm
 
             if (!File.Exists(this.file))
             {
-                File.Create(@"\settings\" + this.file);
+                File.Create(settingsDir + this.file);
                 Console.WriteLine("A file has been created at : " + File.Exists(file));
                 this.Close();
-            } else
+            }
+            else
             {
                 Console.WriteLine("A file with this name has been created");
                 fileNameTextBox.Text = "File exists. Enter a new file name/type";
@@ -428,5 +450,16 @@ namespace TestWinForm
                 Console.WriteLine($"batFile radiobutton has been updated. File extension: {this.fileExtension}");
             }
         }
+    }
+    public partial class JsonValues
+    {
+        [JsonProperty("max_ram")]
+        public string MaxRam { get; set; }
+
+        [JsonProperty("min_ram")]
+        public string MinRam { get; set; }
+
+        [JsonProperty("java_params")]
+        public string JavaParams { get; set; }
     }
 }
