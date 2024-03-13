@@ -11,42 +11,65 @@ namespace TestWinForm
     public partial class MainForm : Form
     {
         private string filePath;
+        private FileValues fileValues;
 
         public MainForm()
         {
-            string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string appDir = Path.Combine(appFolder, @"MinecraftGUI\");
-            string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings");
-            string serversDir = Path.Combine(appFolder, @"MinecraftGUI\servers");
-
+            fileValues = new FileValues();
             InitializeComponent();
 
-            if (!Directory.Exists(appDir))
+            if (!Directory.Exists(fileValues.getAppDir()))
             {
-                Directory.CreateDirectory(appDir);
+                Directory.CreateDirectory(fileValues.getAppDir());
             }
             else
             {
                 Console.WriteLine("Application folder already exists.");
             }
 
-            if (!Directory.Exists(serversDir))
+            if (!Directory.Exists(fileValues.getServersDir()))
             {
-                Directory.CreateDirectory(serversDir);
+                Directory.CreateDirectory(fileValues.getServersDir());
             }
             else
             {
                 Console.WriteLine("Server folder already exists.");
             }
 
-            if (!Directory.Exists(settingsDir))
+            if (!Directory.Exists(fileValues.getSettingsDir()))
             {
 
-                Directory.CreateDirectory(settingsDir);
+                Directory.CreateDirectory(fileValues.getSettingsDir());
             }
             else
             {
                 Console.WriteLine("Settings folder already exists.");
+            }
+
+            if (!File.Exists(fileValues.getSettingsFile()))
+            {
+                File.Create(fileValues.getSettingsFile());
+                JsonValues jsonValues = new JsonValues
+                {
+                    ServerJar = "server.jar",
+                    MaxRam = "-Xmx4G",
+                    MinRam = "-Xms1G",
+                    JavaParams = ""
+                };
+
+                fileValues.setDefaultSettings(JsonConvert.SerializeObject(jsonValues, Formatting.Indented));
+                Console.WriteLine(fileValues.getDefaultSettings());
+                Console.WriteLine("Settings file created.");
+                File.WriteAllText(fileValues.getSettingsFile(), fileValues.getDefaultSettings());
+            }
+            else
+            {
+                if (File.ReadAllLines(fileValues.getSettingsFile()) == null)
+                {
+                    File.WriteAllText(fileValues.getSettingsFile(), fileValues.getDefaultSettings());
+                }
+                Console.WriteLine("Server settings file already exists.");
+                Console.WriteLine("Default server settings: \n" + fileValues.getDefaultSettings());
             }
         }
 
@@ -205,28 +228,12 @@ namespace TestWinForm
 
         private void serverStartBtn_Click(object sender, EventArgs e)
         {
-            string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings\settings.json");
-
-            if (!File.Exists(settingsDir))
-            {
-                File.Create(settingsDir);
-                JsonValues jsonValues = new JsonValues
-                {
-                    MaxRam = "-Xmx4G",
-                    MinRam = "-Xms1G",
-                    JavaParams = ""
-                };
-                string defaultSettings = JsonConvert.SerializeObject(jsonValues, Formatting.Indented);
-                Console.WriteLine("Settings file created.");
-                File.WriteAllText(settingsDir, defaultSettings);
-            }
-
+            fileValues = new FileValues();
 
             StringBuilder stringBuilder = new StringBuilder();
             string jsonToString = "";
 
-            using (StreamReader sr = new StreamReader(settingsDir))
+            using (StreamReader sr = new StreamReader(fileValues.getSettingsFile()))
             {
                 while (!sr.EndOfStream)
                 {
@@ -453,6 +460,9 @@ namespace TestWinForm
     }
     public partial class JsonValues
     {
+        [JsonProperty("server_jar")]
+        public string ServerJar { get; set; }
+
         [JsonProperty("max_ram")]
         public string MaxRam { get; set; }
 
@@ -461,5 +471,49 @@ namespace TestWinForm
 
         [JsonProperty("java_params")]
         public string JavaParams { get; set; }
+    }
+
+    public partial class FileValues
+    {
+        private string appFolder, appDir, settingsDir, serversDir, settingsFile, defaultSettings;
+
+        public string getAppFolder()
+        {
+            this.appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            return this.appFolder;
+        }
+        public string getAppDir()
+        {
+            this.appDir = Path.Combine(getAppFolder(), @"MinecraftGUI\");
+            return this.appDir;
+        }
+
+        public string getSettingsDir()
+        {
+            this.settingsDir = Path.Combine(getAppFolder(), @"MinecraftGUI\settings");
+            return this.settingsDir;
+        }
+
+        public string getServersDir()
+        {
+            this.serversDir = Path.Combine(getAppFolder(), @"MinecraftGUI\servers");
+            return this.serversDir;
+        }
+
+        public string getSettingsFile()
+        {
+            this.settingsFile = Path.Combine(getAppFolder(), @"MinecraftGUI\settings\settings.json");
+            return this.settingsFile;
+        }
+
+        public void setDefaultSettings(string defaultSettings)
+        {
+            this.defaultSettings = defaultSettings;
+        }
+
+        public string getDefaultSettings()
+        {
+            return this.defaultSettings;
+        }
     }
 }
