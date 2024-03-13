@@ -10,67 +10,26 @@ namespace TestWinForm
 {
     public partial class MainForm : Form
     {
+        // Properties for global assets
         private string filePath;
-        private FileValues fileValues;
+        private AppFolderFiles appFolderFiles;
+        private string serverFile;
 
         public MainForm()
         {
-            fileValues = new FileValues();
             InitializeComponent();
+        }
 
-            if (!Directory.Exists(fileValues.getAppDir()))
-            {
-                Directory.CreateDirectory(fileValues.getAppDir());
-            }
-            else
-            {
-                Console.WriteLine("Application folder already exists.");
-            }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
 
-            if (!Directory.Exists(fileValues.getServersDir()))
-            {
-                Directory.CreateDirectory(fileValues.getServersDir());
-            }
-            else
-            {
-                Console.WriteLine("Server folder already exists.");
-            }
+            appFolderFiles = new AppFolderFiles();
 
-            if (!Directory.Exists(fileValues.getSettingsDir()))
-            {
+            appFolderFiles.createApplicationFolders();
+            appFolderFiles.createApplicationFiles();
+            appFolderFiles.createConfigFiles();
 
-                Directory.CreateDirectory(fileValues.getSettingsDir());
-            }
-            else
-            {
-                Console.WriteLine("Settings folder already exists.");
-            }
-
-            if (!File.Exists(fileValues.getSettingsFile()))
-            {
-                File.Create(fileValues.getSettingsFile());
-                JsonValues jsonValues = new JsonValues
-                {
-                    ServerJar = "server.jar",
-                    MaxRam = "-Xmx4G",
-                    MinRam = "-Xms1G",
-                    JavaParams = ""
-                };
-
-                fileValues.setDefaultSettings(JsonConvert.SerializeObject(jsonValues, Formatting.Indented));
-                Console.WriteLine(fileValues.getDefaultSettings());
-                Console.WriteLine("Settings file created.");
-                File.WriteAllText(fileValues.getSettingsFile(), fileValues.getDefaultSettings());
-            }
-            else
-            {
-                if (File.ReadAllLines(fileValues.getSettingsFile()) == null)
-                {
-                    File.WriteAllText(fileValues.getSettingsFile(), fileValues.getDefaultSettings());
-                }
-                Console.WriteLine("Server settings file already exists.");
-                Console.WriteLine("Default server settings: \n" + fileValues.getDefaultSettings());
-            }
+            Console.WriteLine("Application has loaded.");
         }
 
         private void SetFilePath(string path)
@@ -113,8 +72,6 @@ namespace TestWinForm
 
             return result;
         }
-
-        private string serverFile;
 
         private void serverFilesTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -228,12 +185,12 @@ namespace TestWinForm
 
         private void serverStartBtn_Click(object sender, EventArgs e)
         {
-            fileValues = new FileValues();
+            appFolderFiles = new AppFolderFiles();
 
             StringBuilder stringBuilder = new StringBuilder();
             string jsonToString = "";
 
-            using (StreamReader sr = new StreamReader(fileValues.getSettingsFile()))
+            using (StreamReader sr = new StreamReader(appFolderFiles.getSettingsFile()))
             {
                 while (!sr.EndOfStream)
                 {
@@ -295,11 +252,6 @@ namespace TestWinForm
         }
 
         private void saveFileBtn_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
         {
 
         }
@@ -458,6 +410,7 @@ namespace TestWinForm
             }
         }
     }
+
     public partial class JsonValues
     {
         [JsonProperty("server_jar")]
@@ -473,39 +426,59 @@ namespace TestWinForm
         public string JavaParams { get; set; }
     }
 
-    public partial class FileValues
+    public partial class AppFolderFiles
     {
-        private string appFolder, appDir, settingsDir, serversDir, settingsFile, defaultSettings;
+        // Config property values 
+        private string appFolder, appDir, settingsDir, serversDir, 
+            configDir, configDefaultSettings, settingsFile, defaultSettings;
+        
+        // Config default files
+        private string[] configFiles;
 
-        public string getAppFolder()
+        // Returns the Desktop Folder path
+        public string getDesktopDir()
         {
             this.appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             return this.appFolder;
         }
+
+
         public string getAppDir()
         {
-            this.appDir = Path.Combine(getAppFolder(), @"MinecraftGUI\");
+            this.appDir = Path.Combine(getDesktopDir(), @"MinecraftGUI\");
             return this.appDir;
         }
 
         public string getSettingsDir()
         {
-            this.settingsDir = Path.Combine(getAppFolder(), @"MinecraftGUI\settings");
+            this.settingsDir = Path.Combine(getAppDir(), @"\settings");
             return this.settingsDir;
         }
 
         public string getServersDir()
         {
-            this.serversDir = Path.Combine(getAppFolder(), @"MinecraftGUI\servers");
+            this.serversDir = Path.Combine(getAppDir(), @"\servers");
             return this.serversDir;
         }
 
         public string getSettingsFile()
         {
-            this.settingsFile = Path.Combine(getAppFolder(), @"MinecraftGUI\settings\settings.json");
+            this.settingsFile = Path.Combine(getSettingsDir(), @"\settings.json");
             return this.settingsFile;
         }
 
+        public string getConfigDir()
+        {
+            this.configDir = Path.Combine(getAppDir(), @"\config");
+            return this.configDir;
+        }
+
+        public string getConfigDefaultSettings()
+        {
+            this.configDefaultSettings = Path.Combine(getConfigDir(), @"\defaultServerSettings.json");
+            return this.configDefaultSettings;
+        }
+        
         public void setDefaultSettings(string defaultSettings)
         {
             this.defaultSettings = defaultSettings;
@@ -514,6 +487,66 @@ namespace TestWinForm
         public string getDefaultSettings()
         {
             return this.defaultSettings;
+        }
+
+        public void createApplicationFolders()
+        {
+            if (!Directory.Exists(getAppDir()))
+            {
+                Directory.CreateDirectory(getAppDir());
+            }
+            else
+            {
+                Console.WriteLine("Application folder already exists.");
+            }
+
+            if (!Directory.Exists(getServersDir()))
+            {
+                Directory.CreateDirectory(getServersDir());
+            }
+            else
+            {
+                Console.WriteLine("Server folder already exists.");
+            }
+
+            if (!Directory.Exists(getSettingsDir()))
+            {
+
+                Directory.CreateDirectory(getSettingsDir());
+            }
+            else
+            {
+                Console.WriteLine("Settings folder already exists.");
+            }
+
+            if (!Directory.Exists(getConfigDir()))
+            {
+                Directory.CreateDirectory(getConfigDir());
+            }
+            else
+            {
+                Console.WriteLine("Config folder already exists.");
+            }
+        }
+
+        public void createApplicationFiles()
+        {
+            if (!File.Exists(getConfigDefaultSettings()))
+            {
+                createConfigFiles();
+            }
+            else
+            {
+                Console.WriteLine("Config default settings file has been created");
+            }
+        }
+
+        public void createConfigFiles()
+        {
+            string defaultServerSettings =
+                "{\r\n \"server_jar\": \"server.jar\",\r\n \"max_ram\": \"-Xmx4G\",\r\n \"min_ram\": \"-Xms1G\",\r\n \"java_params\": \"\"\r\n }";
+            File.Create(getConfigDir() + @"\defaultServerSettings.json");
+            File.WriteAllText((getConfigDir() + @"\defaultServerSettings.json"), defaultServerSettings);
         }
     }
 }
