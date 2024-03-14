@@ -24,17 +24,19 @@ namespace TestWinForm
         {
 
             appFolderFiles = new AppFolderFiles();
-
             appFolderFiles.createApplicationFolders();
             appFolderFiles.createApplicationFiles();
 
-            serverFilesTree.Nodes.Clear();
-            var node = TraverseDirectory(filePath);
-            Console.WriteLine("Node name: " + node.Text);
-            string text = Path.GetFileName(node.Text);
-            node.Text = text;
-            serverFilesTree.Nodes.Add(node);
-            node.Expand();
+            // Default tree node directory
+            {
+                serverFilesTree.Nodes.Clear();
+                var node = TraverseDirectory(filePath);
+                Console.WriteLine("Node name: " + node.Text);
+                string text = Path.GetFileName(node.Text);
+                node.Text = text;
+                serverFilesTree.Nodes.Add(node);
+                node.Expand();
+            }
 
             Console.WriteLine("Application has loaded.");
         }
