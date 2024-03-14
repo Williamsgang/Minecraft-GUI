@@ -221,13 +221,13 @@ namespace TestWinForm
             Console.WriteLine("-jar " + java_params);
 
             javaProcess.StartInfo.FileName = "java.exe";
-            javaProcess.StartInfo.Arguments = ""; // java args
+            javaProcess.StartInfo.Arguments = "-jar " + java_params; // java args
             javaProcess.StartInfo.UseShellExecute = false;
             javaProcess.StartInfo.RedirectStandardInput = true;
             javaProcess.StartInfo.RedirectStandardOutput = true;
             javaProcess.StartInfo.CreateNoWindow = false;
 
-            javaProcess.Start();
+            // javaProcess.Start();
 
             using (StreamWriter javaStreamWriter = javaProcess.StandardInput)
             using (StreamReader javaStreamReader = javaProcess.StandardOutput)
@@ -251,7 +251,7 @@ namespace TestWinForm
 
         private void createFileBtn_Click(object sender, EventArgs e)
         {
-            CreateFileForm createFileForm = new CreateFileForm();
+            CreateFileForm createFileForm = new CreateFileForm(this.serverFile);
             createFileForm.ShowDialog();
 
             string file = createFileForm.file;
@@ -268,24 +268,9 @@ namespace TestWinForm
     public partial class CreateFileForm : Form
     {
         public string file;
-
         private string fileName;
-        private string FileName
-        {
-            get { return fileName; }
-            set { fileName = value; }
-        }
-
         private string[] fileExtensions = { ".txt", ".properties", ".bat" };
-
         private string fileExtension;
-        private string FileExtension
-        {
-            get { return fileExtension; }
-            set { fileExtension = value; }
-        }
-
-        private bool Checked { get; set; }
 
         // CreateFileForm properties
         private TextBox fileNameTextBox;
@@ -294,9 +279,13 @@ namespace TestWinForm
         private RadioButton textFile;
         private RadioButton propertiesFile;
         private RadioButton batFile;
+        private string filePath;
+        private AppFolderFiles appFolderFiles;
 
-        public CreateFileForm()
+        public CreateFileForm(string filePath)
         {
+            this.filePath = filePath;
+
             // Initializing properties
             this.saveFileInfo = new Button();
             this.closeFormBtn = new Button();
@@ -361,11 +350,11 @@ namespace TestWinForm
 
         private void saveFileInfo_Click(object sender, EventArgs e)
         {
+
             string tempFileName = fileNameTextBox.Text;
             string fileExtension = this.fileExtension;
 
-            string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string settingsDir = Path.Combine(appFolder, @"MinecraftGUI\settings\");
+            appFolderFiles = new AppFolderFiles();
 
             string fileName = tempFileName + fileExtension;
 
@@ -374,7 +363,7 @@ namespace TestWinForm
 
             if (!File.Exists(this.file))
             {
-                File.Create(settingsDir + this.file);
+                File.Create(appFolderFiles.getSettingsDir() + this.file);
                 Console.WriteLine("A file has been created at : " + File.Exists(file));
                 this.Close();
             }
@@ -419,21 +408,6 @@ namespace TestWinForm
         }
     }
 
-    public partial class JsonValues
-    {
-        [JsonProperty("server_jar")]
-        public string ServerJar { get; set; }
-
-        [JsonProperty("max_ram")]
-        public string MaxRam { get; set; }
-
-        [JsonProperty("min_ram")]
-        public string MinRam { get; set; }
-
-        [JsonProperty("java_params")]
-        public string JavaParams { get; set; }
-    }
-
     public partial class AppFolderFiles
     {
         // Config property values 
@@ -443,59 +417,56 @@ namespace TestWinForm
         // Config default files
         private string[] configFiles;
 
-        // Returns the Desktop Folder path
+        // Returns the Desktop folder path
         public string getDesktopDir()
         {
             this.appFolder = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             return this.appFolder;
         }
 
+        // Returns the application folder path
         public string getAppDir()
         {
             this.appDir = Path.Combine(getDesktopDir(), @"MinecraftGUI\");
             return this.appDir;
         }
 
+        // Returns the settings folder path
         public string getSettingsDir()
         {
             this.settingsDir = Path.Combine(getAppDir(), @"settings\");
             return this.settingsDir;
         }
 
+        // Returns the servers folder path
         public string getServersDir()
         {
             this.serversDir = Path.Combine(getAppDir(), @"servers\");
             return this.serversDir;
         }
 
+        // Returns the server settings file
         public string getSettingsFile()
         {
             this.settingsFile = Path.Combine(getSettingsDir(), @"settings.json");
             return this.settingsFile;
         }
 
+        // Returns the config folder path
         public string getConfigDir()
         {
             this.configDir = Path.Combine(getAppDir(), @"config\");
             return this.configDir;
         }
 
+        // Returns the config default settings file
         public string getConfigDefaultSettings()
         {
             this.configDefaultSettings = Path.Combine(getConfigDir(), @"defaultServerSettings.json");
             return this.configDefaultSettings;
         }
-        
-        public void setDefaultSettings(string defaultSettings)
-        {
-            this.defaultSettings = defaultSettings;
-        }
 
-        public string getDefaultSettings()
-        {
-            return this.defaultSettings;
-        }
-
+        // Creates the application folders
         public void createApplicationFolders()
         {
             // Checks for application folder
@@ -543,9 +514,20 @@ namespace TestWinForm
             }
         }
 
+        // Creates the application files
         public void createApplicationFiles()
         {
-                if (!File.Exists(getSettingsFile()))
+            if (!File.Exists(getConfigDefaultSettings()))
+            {
+                createConfigFiles();
+                Console.WriteLine(getConfigDefaultSettings());
+            }
+            else
+            {
+                Console.WriteLine("Config default settings file already exists");
+            }
+
+            if (!File.Exists(getSettingsFile()))
                 {
                     createSettingFiles();
                     Console.WriteLine(getSettingsFile());
@@ -554,22 +536,12 @@ namespace TestWinForm
                 {
                     Console.WriteLine("Settings file already exists");
                 }
-
-                if (!File.Exists(getConfigDefaultSettings()))
-                {
-                    createConfigFiles();
-                    Console.WriteLine(getConfigDefaultSettings());
-                }
-                else
-                {
-                    Console.WriteLine("Config default settings file alread exists");
-                }
         }
 
         public void createConfigFiles()
         {
             string defaultServerSettings = "{\r\n \"server_jar\": \"server.jar\",\r\n \"max_ram\": \"-Xmx4G\",\r\n \"min_ram\": \"-Xms1G\",\r\n \"java_params\": \"\"\r\n }";
-            File.WriteAllText((getConfigDir() + @"defaultServerSettings.json"), defaultServerSettings);
+            File.WriteAllText((getConfigDefaultSettings()), defaultServerSettings);
         }
 
         public void createSettingFiles()
