@@ -27,7 +27,6 @@ namespace TestWinForm
 
             appFolderFiles.createApplicationFolders();
             appFolderFiles.createApplicationFiles();
-            appFolderFiles.createConfigFiles();
 
             Console.WriteLine("Application has loaded.");
         }
@@ -442,7 +441,6 @@ namespace TestWinForm
             return this.appFolder;
         }
 
-
         public string getAppDir()
         {
             this.appDir = Path.Combine(getDesktopDir(), @"MinecraftGUI\");
@@ -451,31 +449,31 @@ namespace TestWinForm
 
         public string getSettingsDir()
         {
-            this.settingsDir = Path.Combine(getAppDir(), @"\settings");
+            this.settingsDir = Path.Combine(getAppDir(), @"settings\");
             return this.settingsDir;
         }
 
         public string getServersDir()
         {
-            this.serversDir = Path.Combine(getAppDir(), @"\servers");
+            this.serversDir = Path.Combine(getAppDir(), @"servers\");
             return this.serversDir;
         }
 
         public string getSettingsFile()
         {
-            this.settingsFile = Path.Combine(getSettingsDir(), @"\settings.json");
+            this.settingsFile = Path.Combine(getSettingsDir(), @"settings.json");
             return this.settingsFile;
         }
 
         public string getConfigDir()
         {
-            this.configDir = Path.Combine(getAppDir(), @"\config");
+            this.configDir = Path.Combine(getAppDir(), @"config\");
             return this.configDir;
         }
 
         public string getConfigDefaultSettings()
         {
-            this.configDefaultSettings = Path.Combine(getConfigDir(), @"\defaultServerSettings.json");
+            this.configDefaultSettings = Path.Combine(getConfigDir(), @"defaultServerSettings.json");
             return this.configDefaultSettings;
         }
         
@@ -491,37 +489,44 @@ namespace TestWinForm
 
         public void createApplicationFolders()
         {
+            // Checks for application folder
             if (!Directory.Exists(getAppDir()))
             {
                 Directory.CreateDirectory(getAppDir());
+                Console.WriteLine(getAppDir());
             }
             else
             {
                 Console.WriteLine("Application folder already exists.");
             }
 
+            // Checks for server folders
             if (!Directory.Exists(getServersDir()))
             {
                 Directory.CreateDirectory(getServersDir());
+                Console.WriteLine(getServersDir());
             }
             else
             {
                 Console.WriteLine("Server folder already exists.");
             }
-
+            
+            // Checks for settings folder
             if (!Directory.Exists(getSettingsDir()))
             {
-
                 Directory.CreateDirectory(getSettingsDir());
+                Console.WriteLine(getSettingsDir());
             }
             else
             {
                 Console.WriteLine("Settings folder already exists.");
             }
 
+            // Checks for config folder
             if (!Directory.Exists(getConfigDir()))
             {
                 Directory.CreateDirectory(getConfigDir());
+                Console.WriteLine(getConfigDir());
             }
             else
             {
@@ -531,22 +536,37 @@ namespace TestWinForm
 
         public void createApplicationFiles()
         {
-            if (!File.Exists(getConfigDefaultSettings()))
-            {
-                createConfigFiles();
-            }
-            else
-            {
-                Console.WriteLine("Config default settings file has been created");
-            }
+                if (!File.Exists(getSettingsFile()))
+                {
+                    createSettingFiles();
+                    Console.WriteLine(getSettingsFile());
+                }
+                else
+                {
+                    Console.WriteLine("Settings file already exists");
+                }
+
+                if (!File.Exists(getConfigDefaultSettings()))
+                {
+                    createConfigFiles();
+                    Console.WriteLine(getConfigDefaultSettings());
+                }
+                else
+                {
+                    Console.WriteLine("Config default settings file alread exists");
+                }
         }
 
         public void createConfigFiles()
         {
-            string defaultServerSettings =
-                "{\r\n \"server_jar\": \"server.jar\",\r\n \"max_ram\": \"-Xmx4G\",\r\n \"min_ram\": \"-Xms1G\",\r\n \"java_params\": \"\"\r\n }";
-            File.Create(getConfigDir() + @"\defaultServerSettings.json");
-            File.WriteAllText((getConfigDir() + @"\defaultServerSettings.json"), defaultServerSettings);
+            string defaultServerSettings = "{\r\n \"server_jar\": \"server.jar\",\r\n \"max_ram\": \"-Xmx4G\",\r\n \"min_ram\": \"-Xms1G\",\r\n \"java_params\": \"\"\r\n }";
+            File.WriteAllText((getConfigDir() + @"/defaultServerSettings.json"), defaultServerSettings);
+        }
+
+        public void createSettingFiles()
+        {
+            string copyText = File.ReadAllText(getConfigDefaultSettings());
+            File.WriteAllText(getSettingsFile(), copyText);
         }
     }
 }
