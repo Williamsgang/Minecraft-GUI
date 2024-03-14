@@ -197,8 +197,10 @@ namespace TestWinForm
                 }
                 jsonToString = stringBuilder.ToString();
             }
-
+            
             JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonToString));
+            string java_params = "";
+            
             while (jsonReader.Read())
             {
                 if (jsonReader.Value != null)
@@ -209,7 +211,14 @@ namespace TestWinForm
                 {
                     Console.WriteLine("Token: {0}", jsonReader.TokenType);
                 }
+
+                if (jsonReader.TokenType == JsonToken.String) 
+                {
+                    java_params += jsonReader.Value + " ";
+                }
             }
+            Console.WriteLine();
+            Console.WriteLine("-jar " + java_params);
 
             javaProcess.StartInfo.FileName = "java.exe";
             javaProcess.StartInfo.Arguments = ""; // java args
@@ -560,7 +569,7 @@ namespace TestWinForm
         public void createConfigFiles()
         {
             string defaultServerSettings = "{\r\n \"server_jar\": \"server.jar\",\r\n \"max_ram\": \"-Xmx4G\",\r\n \"min_ram\": \"-Xms1G\",\r\n \"java_params\": \"\"\r\n }";
-            File.WriteAllText((getConfigDir() + @"/defaultServerSettings.json"), defaultServerSettings);
+            File.WriteAllText((getConfigDir() + @"defaultServerSettings.json"), defaultServerSettings);
         }
 
         public void createSettingFiles()
