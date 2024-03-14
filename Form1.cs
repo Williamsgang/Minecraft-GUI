@@ -11,7 +11,7 @@ namespace TestWinForm
     public partial class MainForm : Form
     {
         // Properties for global assets
-        private string filePath;
+        private string filePath = new AppFolderFiles().getAppDir();
         private AppFolderFiles appFolderFiles;
         private string serverFile;
 
@@ -27,6 +27,14 @@ namespace TestWinForm
 
             appFolderFiles.createApplicationFolders();
             appFolderFiles.createApplicationFiles();
+
+            serverFilesTree.Nodes.Clear();
+            var node = TraverseDirectory(filePath);
+            Console.WriteLine("Node name: " + node.Text);
+            string text = Path.GetFileName(node.Text);
+            node.Text = text;
+            serverFilesTree.Nodes.Add(node);
+            node.Expand();
 
             Console.WriteLine("Application has loaded.");
         }
@@ -44,6 +52,7 @@ namespace TestWinForm
             serverFilesTree.Nodes.Clear();
 
             var node = TraverseDirectory(dialog.SelectedPath);
+
             SetFilePath(dialog.SelectedPath);
             node.Text = Path.GetFileName(node.Text);
 
@@ -197,10 +206,10 @@ namespace TestWinForm
                 }
                 jsonToString = stringBuilder.ToString();
             }
-            
+
             JsonTextReader jsonReader = new JsonTextReader(new StringReader(jsonToString));
             string java_params = "";
-            
+
             while (jsonReader.Read())
             {
                 if (jsonReader.Value != null)
@@ -212,7 +221,7 @@ namespace TestWinForm
                     Console.WriteLine("Token: {0}", jsonReader.TokenType);
                 }
 
-                if (jsonReader.TokenType == JsonToken.String) 
+                if (jsonReader.TokenType == JsonToken.String)
                 {
                     java_params += jsonReader.Value + " ";
                 }
@@ -411,9 +420,9 @@ namespace TestWinForm
     public partial class AppFolderFiles
     {
         // Config property values 
-        private string appFolder, appDir, settingsDir, serversDir, 
+        private string appFolder, appDir, settingsDir, serversDir,
             configDir, configDefaultSettings, settingsFile, defaultSettings;
-        
+
         // Config default files
         private string[] configFiles;
 
@@ -427,21 +436,21 @@ namespace TestWinForm
         // Returns the application folder path
         public string getAppDir()
         {
-            this.appDir = Path.Combine(getDesktopDir(), @"MinecraftGUI\");
+            this.appDir = Path.Combine(getDesktopDir(), @"MinecraftGUI");
             return this.appDir;
         }
 
         // Returns the settings folder path
         public string getSettingsDir()
         {
-            this.settingsDir = Path.Combine(getAppDir(), @"settings\");
+            this.settingsDir = Path.Combine(getAppDir(), @"settings");
             return this.settingsDir;
         }
 
         // Returns the servers folder path
         public string getServersDir()
         {
-            this.serversDir = Path.Combine(getAppDir(), @"servers\");
+            this.serversDir = Path.Combine(getAppDir(), @"servers");
             return this.serversDir;
         }
 
@@ -455,7 +464,7 @@ namespace TestWinForm
         // Returns the config folder path
         public string getConfigDir()
         {
-            this.configDir = Path.Combine(getAppDir(), @"config\");
+            this.configDir = Path.Combine(getAppDir(), @"config");
             return this.configDir;
         }
 
@@ -490,7 +499,7 @@ namespace TestWinForm
             {
                 Console.WriteLine("Server folder already exists.");
             }
-            
+
             // Checks for settings folder
             if (!Directory.Exists(getSettingsDir()))
             {
@@ -528,14 +537,14 @@ namespace TestWinForm
             }
 
             if (!File.Exists(getSettingsFile()))
-                {
-                    createSettingFiles();
-                    Console.WriteLine(getSettingsFile());
-                }
-                else
-                {
-                    Console.WriteLine("Settings file already exists");
-                }
+            {
+                createSettingFiles();
+                Console.WriteLine(getSettingsFile());
+            }
+            else
+            {
+                Console.WriteLine("Settings file already exists");
+            }
         }
 
         public void createConfigFiles()
