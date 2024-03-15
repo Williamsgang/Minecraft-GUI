@@ -12,8 +12,9 @@ namespace TestWinForm
     {
         // Properties for global assets
         private string filePath = new AppFolderFiles().getAppDir();
-        private AppFolderFiles appFolderFiles;
         private string serverFile;
+        private AppFolderFiles appFolderFiles;
+        private Process javaProcess = new Process();
 
         public MainForm()
         {
@@ -30,7 +31,7 @@ namespace TestWinForm
             // Default tree node directory
             {
                 serverFilesTree.Nodes.Clear();
-                var node = TraverseDirectory(filePath);
+                var node = traverseDirectory(filePath);
                 Console.WriteLine("Node name: " + node.Text);
                 string text = Path.GetFileName(node.Text);
                 node.Text = text;
@@ -41,7 +42,7 @@ namespace TestWinForm
             Console.WriteLine("Application has loaded.");
         }
 
-        private void SetFilePath(string path)
+        private void setFilePath(string path)
         {
             this.filePath = path;
         }
@@ -53,9 +54,9 @@ namespace TestWinForm
 
             serverFilesTree.Nodes.Clear();
 
-            var node = TraverseDirectory(dialog.SelectedPath);
+            var node = traverseDirectory(dialog.SelectedPath);
 
-            SetFilePath(dialog.SelectedPath);
+            setFilePath(dialog.SelectedPath);
             node.Text = Path.GetFileName(node.Text);
 
             serverFilesTree.Nodes.Add(node);
@@ -63,13 +64,13 @@ namespace TestWinForm
             node.Expand();
         }
 
-        private TreeNode TraverseDirectory(string path)
+        private TreeNode traverseDirectory(string path)
         {
             TreeNode result = new TreeNode(path);
 
             foreach (var subdirectory in Directory.GetDirectories(path))
             {
-                var node = TraverseDirectory(subdirectory);
+                var node = traverseDirectory(subdirectory);
                 node.Text = Path.GetFileName(node.Text);
                 result.Nodes.Add(node);
             }
@@ -90,7 +91,7 @@ namespace TestWinForm
 
             StringBuilder stringBuilder = new StringBuilder();
 
-            string[] allowedExtensions = { ".txt", ".properties", ".log", ".bat", ".log.gz", ".json" };
+            string[] allowedExtensions = { ".txt", ".properties", ".log", ".bat", ".json", ".log.gz" };
             string fileExtension = Path.GetExtension(fullPath);
 
             switch ((e.Action))
@@ -177,8 +178,6 @@ namespace TestWinForm
 
         }
 
-        private Process javaProcess = new Process();
-
         private void cmdInput_Click(object sender, EventArgs e)
         {
 
@@ -250,16 +249,6 @@ namespace TestWinForm
             javaProcess.WaitForExit();
         }
 
-        private void cmdInputText_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void fileOuput_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void createFileBtn_Click(object sender, EventArgs e)
         {
             CreateFileForm createFileForm = new CreateFileForm(this.serverFile);
@@ -276,6 +265,7 @@ namespace TestWinForm
         }
     }
 
+    #region Creating a new file form
     public partial class CreateFileForm : Form
     {
         public string file;
@@ -418,7 +408,9 @@ namespace TestWinForm
             }
         }
     }
+    #endregion
 
+    #region Global files and folders
     public partial class AppFolderFiles
     {
         // Config property values 
@@ -561,4 +553,5 @@ namespace TestWinForm
             File.WriteAllText(getSettingsFile(), copyText);
         }
     }
+    #endregion
 }

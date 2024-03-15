@@ -58,7 +58,6 @@
             this.fileOuput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.fileOuput.Size = new System.Drawing.Size(1172, 853);
             this.fileOuput.TabIndex = 1;
-            this.fileOuput.TextChanged += new System.EventHandler(this.fileOuput_TextChanged);
             // 
             // cmdOuput
             // 
@@ -138,6 +137,7 @@
             this.saveFileBtn.TabIndex = 2;
             this.saveFileBtn.Text = "Save File";
             this.saveFileBtn.UseVisualStyleBackColor = true;
+            this.saveFileBtn.Enabled = false;
             this.saveFileBtn.Click += new System.EventHandler(this.saveFileBtn_Click);
             // 
             // cmdOutput
@@ -172,7 +172,6 @@
             this.cmdInputText.Name = "cmdInputText";
             this.cmdInputText.Size = new System.Drawing.Size(1064, 22);
             this.cmdInputText.TabIndex = 1;
-            this.cmdInputText.TextChanged += new System.EventHandler(this.cmdInputText_TextChanged);
             // 
             // tableLayoutPanel1
             // 
