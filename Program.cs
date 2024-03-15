@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TestWinForm
+namespace MinecraftServerGUI
 {
     internal static class Program
     {

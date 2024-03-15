@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TestWinForm
+namespace MinecraftServerGUI
 {
     public partial class MainForm : Form
     {
@@ -40,6 +43,12 @@ namespace TestWinForm
             }
 
             Console.WriteLine("Application has loaded.");
+        }
+
+        private void MainForm_Paint(object sender, PaintEventArgs e)
+        {
+           GraphicsPath path = new GraphicsPath();
+            
         }
 
         private void setFilePath(string path)

@@ -1,4 +1,4 @@
-﻿namespace TestWinForm
+﻿namespace MinecraftServerGUI
 {
     partial class MainForm
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.fileOuput = new System.Windows.Forms.TextBox();
             this.cmdOuput = new System.Windows.Forms.TextBox();
             this.serverFilesTree = new System.Windows.Forms.TreeView();
@@ -51,40 +52,36 @@
             // 
             this.fileOuput.AcceptsTab = true;
             this.fileOuput.HideSelection = false;
-            this.fileOuput.Location = new System.Drawing.Point(8, 7);
-            this.fileOuput.Margin = new System.Windows.Forms.Padding(4);
+            this.fileOuput.Location = new System.Drawing.Point(6, 6);
             this.fileOuput.Multiline = true;
             this.fileOuput.Name = "fileOuput";
             this.fileOuput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.fileOuput.Size = new System.Drawing.Size(1172, 853);
+            this.fileOuput.Size = new System.Drawing.Size(880, 694);
             this.fileOuput.TabIndex = 1;
             // 
             // cmdOuput
             // 
-            this.cmdOuput.Location = new System.Drawing.Point(8, 7);
-            this.cmdOuput.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdOuput.Location = new System.Drawing.Point(6, 6);
             this.cmdOuput.Multiline = true;
             this.cmdOuput.Name = "cmdOuput";
             this.cmdOuput.ReadOnly = true;
             this.cmdOuput.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.cmdOuput.Size = new System.Drawing.Size(1172, 854);
+            this.cmdOuput.Size = new System.Drawing.Size(880, 695);
             this.cmdOuput.TabIndex = 0;
             // 
             // serverFilesTree
             // 
-            this.serverFilesTree.Location = new System.Drawing.Point(4, 4);
-            this.serverFilesTree.Margin = new System.Windows.Forms.Padding(4);
+            this.serverFilesTree.Location = new System.Drawing.Point(3, 3);
             this.serverFilesTree.Name = "serverFilesTree";
-            this.serverFilesTree.Size = new System.Drawing.Size(364, 933);
+            this.serverFilesTree.Size = new System.Drawing.Size(274, 759);
             this.serverFilesTree.TabIndex = 2;
             this.serverFilesTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.serverFilesTree_AfterSelect);
             // 
             // serverFilesBtn
             // 
-            this.serverFilesBtn.Location = new System.Drawing.Point(4, 946);
-            this.serverFilesBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.serverFilesBtn.Location = new System.Drawing.Point(3, 768);
             this.serverFilesBtn.Name = "serverFilesBtn";
-            this.serverFilesBtn.Size = new System.Drawing.Size(100, 28);
+            this.serverFilesBtn.Size = new System.Drawing.Size(75, 23);
             this.serverFilesBtn.TabIndex = 3;
             this.serverFilesBtn.Text = "Server Files";
             this.serverFilesBtn.UseVisualStyleBackColor = true;
@@ -94,11 +91,10 @@
             // 
             this.tabControl1.Controls.Add(this.serverFiles);
             this.tabControl1.Controls.Add(this.cmdOutput);
-            this.tabControl1.Location = new System.Drawing.Point(378, 4);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(4);
+            this.tabControl1.Location = new System.Drawing.Point(283, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1200, 934);
+            this.tabControl1.Size = new System.Drawing.Size(900, 759);
             this.tabControl1.TabIndex = 4;
             // 
             // serverFiles
@@ -106,11 +102,10 @@
             this.serverFiles.Controls.Add(this.createFileBtn);
             this.serverFiles.Controls.Add(this.saveFileBtn);
             this.serverFiles.Controls.Add(this.fileOuput);
-            this.serverFiles.Location = new System.Drawing.Point(4, 25);
-            this.serverFiles.Margin = new System.Windows.Forms.Padding(4);
+            this.serverFiles.Location = new System.Drawing.Point(4, 22);
             this.serverFiles.Name = "serverFiles";
-            this.serverFiles.Padding = new System.Windows.Forms.Padding(4);
-            this.serverFiles.Size = new System.Drawing.Size(1192, 905);
+            this.serverFiles.Padding = new System.Windows.Forms.Padding(3);
+            this.serverFiles.Size = new System.Drawing.Size(892, 733);
             this.serverFiles.TabIndex = 0;
             this.serverFiles.Text = "Server Files";
             this.serverFiles.UseVisualStyleBackColor = true;
@@ -118,10 +113,9 @@
             // createFileBtn
             // 
             this.createFileBtn.AutoSize = true;
-            this.createFileBtn.Location = new System.Drawing.Point(9, 866);
-            this.createFileBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.createFileBtn.Location = new System.Drawing.Point(7, 704);
             this.createFileBtn.Name = "createFileBtn";
-            this.createFileBtn.Size = new System.Drawing.Size(100, 31);
+            this.createFileBtn.Size = new System.Drawing.Size(75, 25);
             this.createFileBtn.TabIndex = 3;
             this.createFileBtn.Text = "Create File";
             this.createFileBtn.UseVisualStyleBackColor = true;
@@ -130,14 +124,13 @@
             // saveFileBtn
             // 
             this.saveFileBtn.AutoSize = true;
-            this.saveFileBtn.Location = new System.Drawing.Point(116, 866);
-            this.saveFileBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.saveFileBtn.Enabled = false;
+            this.saveFileBtn.Location = new System.Drawing.Point(87, 704);
             this.saveFileBtn.Name = "saveFileBtn";
-            this.saveFileBtn.Size = new System.Drawing.Size(99, 32);
+            this.saveFileBtn.Size = new System.Drawing.Size(74, 26);
             this.saveFileBtn.TabIndex = 2;
             this.saveFileBtn.Text = "Save File";
             this.saveFileBtn.UseVisualStyleBackColor = true;
-            this.saveFileBtn.Enabled = false;
             this.saveFileBtn.Click += new System.EventHandler(this.saveFileBtn_Click);
             // 
             // cmdOutput
@@ -145,21 +138,19 @@
             this.cmdOutput.Controls.Add(this.cmdOuput);
             this.cmdOutput.Controls.Add(this.cmdInput);
             this.cmdOutput.Controls.Add(this.cmdInputText);
-            this.cmdOutput.Location = new System.Drawing.Point(4, 25);
-            this.cmdOutput.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdOutput.Location = new System.Drawing.Point(4, 22);
             this.cmdOutput.Name = "cmdOutput";
-            this.cmdOutput.Padding = new System.Windows.Forms.Padding(4);
-            this.cmdOutput.Size = new System.Drawing.Size(1192, 905);
+            this.cmdOutput.Padding = new System.Windows.Forms.Padding(3);
+            this.cmdOutput.Size = new System.Drawing.Size(892, 733);
             this.cmdOutput.TabIndex = 1;
             this.cmdOutput.Text = "Cmd Output";
             this.cmdOutput.UseVisualStyleBackColor = true;
             // 
             // cmdInput
             // 
-            this.cmdInput.Location = new System.Drawing.Point(1081, 869);
-            this.cmdInput.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdInput.Location = new System.Drawing.Point(811, 706);
             this.cmdInput.Name = "cmdInput";
-            this.cmdInput.Size = new System.Drawing.Size(100, 25);
+            this.cmdInput.Size = new System.Drawing.Size(75, 20);
             this.cmdInput.TabIndex = 2;
             this.cmdInput.Text = "CMD";
             this.cmdInput.UseVisualStyleBackColor = true;
@@ -167,10 +158,9 @@
             // 
             // cmdInputText
             // 
-            this.cmdInputText.Location = new System.Drawing.Point(8, 870);
-            this.cmdInputText.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdInputText.Location = new System.Drawing.Point(6, 707);
             this.cmdInputText.Name = "cmdInputText";
-            this.cmdInputText.Size = new System.Drawing.Size(1064, 22);
+            this.cmdInputText.Size = new System.Drawing.Size(799, 20);
             this.cmdInputText.TabIndex = 1;
             // 
             // tableLayoutPanel1
@@ -183,21 +173,20 @@
             this.tableLayoutPanel1.Controls.Add(this.serverFilesBtn, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.serverFilesTree, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.serverStartBtn, 1, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 10);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95.02763F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.972376F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1583, 992);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1187, 806);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // serverStartBtn
             // 
-            this.serverStartBtn.Location = new System.Drawing.Point(378, 946);
-            this.serverStartBtn.Margin = new System.Windows.Forms.Padding(4);
+            this.serverStartBtn.Location = new System.Drawing.Point(283, 768);
             this.serverStartBtn.Name = "serverStartBtn";
-            this.serverStartBtn.Size = new System.Drawing.Size(100, 28);
+            this.serverStartBtn.Size = new System.Drawing.Size(75, 23);
             this.serverStartBtn.TabIndex = 5;
             this.serverStartBtn.Text = "Server Start";
             this.serverStartBtn.UseVisualStyleBackColor = true;
@@ -205,14 +194,16 @@
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(1605, 1009);
+            this.ClientSize = new System.Drawing.Size(1204, 820);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "Minecraft Server App";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "Minecraft Server GUI";
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabControl1.ResumeLayout(false);
             this.serverFiles.ResumeLayout(false);

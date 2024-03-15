@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestWinForm.Properties
+namespace MinecraftServerGUI.Properties
 {
 
 
