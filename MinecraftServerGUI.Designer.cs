@@ -73,13 +73,13 @@
             // 
             this.serverFilesTree.Location = new System.Drawing.Point(3, 3);
             this.serverFilesTree.Name = "serverFilesTree";
-            this.serverFilesTree.Size = new System.Drawing.Size(274, 759);
+            this.serverFilesTree.Size = new System.Drawing.Size(274, 758);
             this.serverFilesTree.TabIndex = 2;
             this.serverFilesTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.serverFilesTree_AfterSelect);
             // 
             // serverFilesBtn
             // 
-            this.serverFilesBtn.Location = new System.Drawing.Point(3, 768);
+            this.serverFilesBtn.Location = new System.Drawing.Point(3, 767);
             this.serverFilesBtn.Name = "serverFilesBtn";
             this.serverFilesBtn.Size = new System.Drawing.Size(75, 23);
             this.serverFilesBtn.TabIndex = 3;
@@ -94,7 +94,7 @@
             this.tabControl1.Location = new System.Drawing.Point(283, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(900, 759);
+            this.tabControl1.Size = new System.Drawing.Size(900, 758);
             this.tabControl1.TabIndex = 4;
             // 
             // serverFiles
@@ -105,7 +105,7 @@
             this.serverFiles.Location = new System.Drawing.Point(4, 22);
             this.serverFiles.Name = "serverFiles";
             this.serverFiles.Padding = new System.Windows.Forms.Padding(3);
-            this.serverFiles.Size = new System.Drawing.Size(892, 733);
+            this.serverFiles.Size = new System.Drawing.Size(892, 732);
             this.serverFiles.TabIndex = 0;
             this.serverFiles.Text = "Server Files";
             this.serverFiles.UseVisualStyleBackColor = true;
@@ -166,6 +166,7 @@
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.66231F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.33769F));
@@ -173,18 +174,18 @@
             this.tableLayoutPanel1.Controls.Add(this.serverFilesBtn, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.serverFilesTree, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.serverStartBtn, 1, 1);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 10);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 1);
             this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(2);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 95.02763F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 4.972376F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1187, 806);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1187, 805);
             this.tableLayoutPanel1.TabIndex = 5;
             // 
             // serverStartBtn
             // 
-            this.serverStartBtn.Location = new System.Drawing.Point(283, 768);
+            this.serverStartBtn.Location = new System.Drawing.Point(283, 767);
             this.serverStartBtn.Name = "serverStartBtn";
             this.serverStartBtn.Size = new System.Drawing.Size(75, 23);
             this.serverStartBtn.TabIndex = 5;
@@ -203,8 +204,8 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Minecraft Server GUI";
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
             this.tabControl1.ResumeLayout(false);
             this.serverFiles.ResumeLayout(false);
             this.serverFiles.PerformLayout();
